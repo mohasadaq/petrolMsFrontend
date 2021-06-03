@@ -50,7 +50,7 @@ const login_author = ()=>{
                                   <div className="auth-logo">
                                       <a href="index.html" className="logo logo-dark text-center">
                                           <span className="logo-lg">
-                                              {/* <img src="../assets/images/logo-dark.png" alt="" height="22"/> */}
+                                              <img src="../assets/images/kamil.jpeg" alt="" height="22"/>
                                           </span>
                                       </a>
                   
