@@ -12,7 +12,7 @@ const login_author = ()=>{
   let input =  Appfunction.validate_form_inputs(['empUsername','empPassword'])
   if(input!==null){
       axios
-        .post("http://localhost:8800/Employee/checklogin", {
+        .post("https://petrolmanagement.herokuapp.com/Employee/checklogin", {
           empUsername: $("#empUsername").val(),
           empPassword: $("#empPassword").val(),
         })
@@ -48,11 +48,11 @@ const login_author = ()=>{
                               
                               <div className="text-center w-75 m-auto">
                                   <div className="auth-logo">
-                                      <a href="index.html" className="logo logo-dark text-center">
+                                      <div  className="logo logo-dark text-center">
                                           <span className="logo-lg">
-                                              <img src="../assets/images/kamil.jpeg" alt="" height="22"/>
+                                              <img src="../assets/images/kamil.jpeg" alt="" height="100" width="100"/>
                                           </span>
-                                      </a>
+                                      </div>
                   
                                       <a href="index.html" className="logo logo-light text-center">
                                           <span className="logo-lg">

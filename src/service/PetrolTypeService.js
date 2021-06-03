@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "http://localhost:8800/petroltype";
+const url = "https://petrolmanagement.herokuapp.com/petroltype";
 class PetrolTypeService {
   getpetroltype() {
     return axios.get(`${url}/list`);

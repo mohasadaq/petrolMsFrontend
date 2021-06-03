@@ -1,5 +1,5 @@
 import axios from "axios"
-const url = "http://localhost:8800/expenseType";
+const url = "https://petrolmanagement.herokuapp.com/expenseType";
 
 class ExpenseService {
     getExpenseList(){

@@ -1,5 +1,5 @@
 import axios from 'axios'
-const url ="http://localhost:8800/meterReading"
+const url ="https://petrolmanagement.herokuapp.com/meterReading"
 
 class MeterReadingService {
     getMeterReadingList(){
