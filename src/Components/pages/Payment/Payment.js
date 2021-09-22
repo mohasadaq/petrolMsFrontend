@@ -1,7 +1,7 @@
-import React from 'react'
 import MaterialTable from 'material-table'
+import React from 'react'
 // import Edit from '@material-ui/icons/Edit'
-const Branch = ({ payment, editPayment, deletePayment }) => {
+const Branch = ({ payment, details, deletePayment }) => {
   return (
     <div>
       <div className="row">
@@ -33,9 +33,18 @@ const Branch = ({ payment, editPayment, deletePayment }) => {
                   //
                 ]}
                 actions={[
+                  {
+                    icon: "D",
+                    tooltip: 'edit',
+                    iconProps: {style: { color: "#01579b" }},
+                    onClick: (event, rowData) => {
+                      details(rowData.pId)
+                    },
+                  },
                   (rowData) => ({
                     icon: "delete",
                     tooltip: "Delete User",
+                    iconProps: {style: { color: "#CA0B00" }},
                     onClick: (event, rowData) => {
                       deletePayment(rowData.pId);
                     },

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import TransectionService from "../../../service/transectionServices";
-import Transection from "./Transection";
 import $ from "jquery";
 import AppFunction from "../../app";
 
@@ -9,15 +8,17 @@ import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 import CustomerService from "../../../service/CustomerService";
 import PetroltypeService from "../../../service/PetrolTypeService";
+import DashboardSerice from "../../../service/dashboarService";
 
+import TransetionHtml from "./transectionHtml";
 // or less ideally
-import { Button, Modal } from "react-bootstrap";
 
 const AddExpense = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [transection, setTransection] = useState([]);
+  const [letersRemaining, setLetersRemaining] = useState([]);
 
   const getTransection = () => {
     TransectionService.getTransectionList().then((response) => {
@@ -27,8 +28,16 @@ const AddExpense = () => {
 
   useEffect(() => {
     getTransection();
+    getnumberOfliterRemaining()
   }, []);
 
+
+  const getnumberOfliterRemaining = () => {
+    DashboardSerice.getNumOfLiterRemaining().then((response) => {
+      setLetersRemaining(response.data)
+      console.log(response.data)
+    })
+  }
 
 
   $(document).ready(function () {
@@ -46,10 +55,33 @@ const AddExpense = () => {
         $('#amountpaid').val(total)
     });
 
+
+    $('#petroltyid').on('change', function () {
+      let petrolRemain = letersRemaining.filter((petrol) => petrol.pt_id == $('#petroltyid').val())
+      if (Number(petrolRemain[0].CURRENTliters) == 0) {
+       $('#numofliter').val(0)
+     }else{
+      $('#numofliter').val('')
+       
+     }
+
+    })
+
+    $('#numofliter').on('keyup', function () {
+      let petrolRemain = letersRemaining.filter((petrol) => petrol.pt_id == $('#petroltyid').val())
+      if (Number(petrolRemain[0].CURRENTliters) == 0) {
+       $('#numofliter').val(0)
+     }else{
+      // $('#numofliter').val('')
+       
+     }
+    })
   });
 
 
   // handal submitt
+  var emplooy = localStorage.getItem("empId");
+
   const handleSubmitt = (e) => {
     e.preventDefault();
     let data = {
@@ -59,8 +91,10 @@ const AddExpense = () => {
       numofliter: $("#numofliter").val(),
       priceperLiter: $("#priceperLiter").val(),
       amountpaid: $("#amountpaid").val(),
+      employeeid: emplooy,
+      
     };
-    // console.log(data);
+    //  console.log(data);
     let inputs = AppFunction.validate_form_inputs([
       "custmrid",
       "petroltyid",
@@ -68,16 +102,22 @@ const AddExpense = () => {
       "priceperLiter",
     ]);
     if (inputs !== null) {
-      TransectionService.saveTransection(data).then((response) => {
-        if ($("#trnsId").val() > 0) {
-          toast.info("Transection Successfully  Updated ..");
-          $("#trnsId").val(0);
-        } else {
-          toast.success("Transection Successfully  Saved ..");
-        }
-        getTransection();
-        handleClose();
-      });
+      if ($('#numofliter').val() == 0) {
+        toast.error('No Liters remaning')
+
+      } else {
+        TransectionService.saveTransection(data).then((response) => {
+          if ($("#trnsId").val() > 0) {
+            toast.info("Transection Successfully  Updated ..");
+            $("#trnsId").val(0);
+          } else {
+            toast.success("Transection Successfully  Saved ..");
+          }
+          getTransection();
+          handleClose();
+        });
+      }
+      
     }
   };
 
@@ -90,6 +130,7 @@ const AddExpense = () => {
       });
     });
   };
+  
 
   // get petrol type
   const petrolType = () => {
@@ -157,154 +198,39 @@ const AddExpense = () => {
       )
     }
   })
+  
+  const searchdate = () => {
+    let datefrom = $('#datefrom').val();
+    let dateto = $('#dateto').val();
+    let dates = [];
 
+    let data = {
+      datefrom, dateto
+    }
+    dates.push(data)
+    console.log(dates)
+    TransectionService.getTransectionListBydate(dates).then((resposne => {
+      setTransection(resposne.data)
+      console.log(transection)
+    }))
 
-
-
+  }
 
   return (
     <>
-      <div className="row">
-        <div className="col-12">
-          <div className="card-box">
-            <div className="row">
-              <div className="col-lg-8"></div>
-              <div className="col-lg-4">
-                <div className="text-lg-right mt-3 mt-lg-0">
-                  <Button
-                    variant="primary"
-                    className="waves-effect waves-light float-right mt-0"
-                    onClick={() => {
-                      handleShow();
-                      customer();
-                      petrolType();
-
-                    }}
-                  >
-                    <i className="mdi mdi-plus-circle mr-1"></i>
-                    Add Transection
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Transection transection={transection} editTransection={editTransection} deleteTransection={deleteTransection} />
-      <ToastContainer />
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* <form> */}
-          <input
-            type="hidden"
-            name="trnsId"
-            className="form-control"
-            id="trnsId"
-            aria-describedby="empName"
-            placeholder="Enter Name"
-          />
-          <div className="row">
-            <div className="col-12">
-              <div className="form-group">
-                <label>Customer</label>
-
-                <select className="form-control" id="custmrid">
-                  <option value="">Select Customer</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-12">
-              <div className="form-group">
-                <label>petrol Type</label>
-                <select className="form-control" id="petroltyid">
-                  <option value="">Select petrol Type</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-12">
-              <div className="form-group">
-                <label>number of liter</label>
-                <input
-                  type="number"
-                  name="numofliter"
-                  className="form-control"
-                  id="numofliter"
-                  aria-describedby="sname"
-                  placeholder="Enter Name"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-12">
-              <div className="form-group">
-                <label>price per liter</label>
-                <input
-                  type="number"
-                  name="priceperLiter"
-                  className="form-control"
-                  id="priceperLiter"
-                  aria-describedby="sname"
-                  placeholder="Enter Name"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-12">
-              <div className="form-group">
-                <div class="row">
-                  <div class="col-6">
-                    <label>Amount Paid</label>
-                  </div>
-                  <div className="col-6 text-right">
-                    <label className="">
-                      <smal className="text-muted ">Total Amount</smal>
-                      <strong
-                        className="fa fa-dollar-sign p-1  "
-                        id="total_amount"
-                        style={{ fontSize: 16 }}
-                      >
-                        0
-                      </strong>
-                    </label>
-                  </div>
-                </div>
-                <input
-                  type="number"
-                  name="amountpaid"
-                  className="form-control"
-                  id="amountpaid"
-                  aria-describedby="sname"
-                  placeholder="Enter Name"
-                />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSubmitt}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <div className="container"></div>
+     <TransetionHtml
+      handleShow={handleShow}
+      handleClose={handleClose}
+      handleSubmitt={handleSubmitt}
+      ToastContainer={ToastContainer}
+      transection={transection}
+      editTransection={editTransection}
+      deleteTransection={deleteTransection}
+      show={show}
+      customer={customer}
+      petrolType={petrolType}
+      searchdate={searchdate}
+     /> 
     </>
   );
 };

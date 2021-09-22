@@ -32,7 +32,7 @@ const Sidebar = () => {
   const submenutext = (id) => {
     let data = subMenue.filter((sub) => sub.menueId==id)
      return data.map((sub) => (
-              <Link className="dropdown-item " to={sub.link}>
+              <Link className="dropdown-item " to={sub.link}style={{color:"black",fontWeight:"bold",fontFamily:"arial",letterSpacing:1}}>
                 <i className={sub.icon}></i>
                 {sub.text}
               </Link>
@@ -44,15 +44,15 @@ const Sidebar = () => {
   const menueText = () => {
     let row = menue.map((menu) =>
       menu.id != 1 && menu.id != 6 ? (
-        <li className="nav-item dropdown" id={menu.menue}>
+        <li className="nav-item dropdown text_danger">
           <a
-            className="nav-link dropdown-toggle arrow-none"
+            className="nav-link dropdown-toggle arrow-none "
             href="#"
             id="topnav-apps"
             role="button"
             data-toggle="dropdown"
             aria-haspopup="true"
-            aria-expanded="false"
+            aria-expanded="false"style={{color:"black",fontWeight:"bold",letterSpacing:1}}
           >
             <i className={menu.icon}></i> {menu.menue}
             <div className="arrow-down"></div>
@@ -62,7 +62,8 @@ const Sidebar = () => {
           </div>
         </li>
       ) : (
-        <Link
+          <Link
+          style={{color:"black",fontWeight:"bold",letterSpacing:1,fontFamily:"arial"}}
           className="nav-link dropdown-toggle arrow-none"
           id={menu.menue}
           role="button"

@@ -1,12 +1,12 @@
 import React ,{useState,useEffect }from 'react'
 import CustomerService from "../../../service/CustomerService"
-import CustomerList from "./Customer";
 import $ from "jquery";
 import AppFunction from "../../app";
-import { ToastContainer, toast } from "react-toastify";
-import { Button, Modal } from "react-bootstrap";
-import "react-toastify/dist/ReactToastify.css";
 import Swal from 'sweetalert2'
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import CustomerHtml from './customerHtml'
 
 export const AddCustomer = () => {
 
@@ -27,14 +27,15 @@ export const AddCustomer = () => {
     
     const handleSubmitt = (e) => {
       e.preventDefault();
-      let data ={
+      let data = {
+        employeeid: localStorage.getItem("empId"),
         cId:$("#cId").val(),
         cname:$("#cname").val(),
         caddress:$("#caddress").val(),
         cphone:$("#cphone").val(),
         beginingBalance:$("#beginingBalance").val()
       };
-      console.log(data);
+      // console.log(data);
       let inputs = AppFunction.validate_form_inputs([
         "cname",
         "caddress",
@@ -53,10 +54,16 @@ export const AddCustomer = () => {
           getallcustomer();
           handleClose();
         })
-      }
-      
-     
-    };
+      }    
+  };
+  
+
+  // validate
+    function validate() {
+      var element = document.getElementById('cname');
+      element.value = element.value.replace(/[^a-zA-Z@]+/, ' ');
+  };
+  
     const editCustomer = (id) => {
       CustomerService.getOneCustomer(id).then((response) => {
         console.log(response.data)
@@ -65,11 +72,13 @@ export const AddCustomer = () => {
       $("#caddress").val(response.data.caddress);
       $("#cphone").val(response.data.cphone);
       $("#cId").val(response.data.cId)
-      $("#beginingBalance").val(response.data.beginingBalance)
+        $("#beginingBalance").val(response.data.beginingBalance)
+        $("#beginingBalance").prop('disabled',true)
       });
     };
-    const deleteCustomer = (id) =>{
 
+    // delete customer
+    const deleteCustomer = (id) =>{
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't to delete this!",
@@ -102,119 +111,18 @@ export const AddCustomer = () => {
 
     return (
         <>
-         <div className="row">
-        <div className="col-12">
-          <div className="card-box">
-            <div className="row">
-              <div className="col-lg-8"></div>
-              <div className="col-lg-4">
-                <div className="text-lg-right mt-3 mt-lg-0">
-                  <Button
-                    variant="primary"
-                    className="waves-effect waves-light float-right mt-0"
-                    onClick={handleShow}
-                  >
-                    <i className="mdi mdi-plus-circle mr-1"></i>
-                    Add Customer
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <CustomerList
+        <CustomerHtml 
+        handleShow={handleShow}
+        handleClose={handleClose}
+        handleSubmitt={handleSubmitt}
+        ToastContainer={ToastContainer}
         customer={customer}
         deleteCustomer={deleteCustomer}
         editCustomer={editCustomer}
-      />
-
-
-      <ToastContainer/>
-      
-       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* <form> */}
-          <input
-            type="hidden"
-            name="cId"
-            className="form-control"
-            id="cId"
-            aria-describedby="empName"
-            placeholder="Enter Name"
-          />
-          <div className="row">
-            <div className="col-12">
-              <div className="form-group">
-                <label>Name</label>
-                <input
-                  type="text"
-                  name="cname"
-                  className="form-control"
-                  id="cname"
-                  aria-describedby="cname"
-                  placeholder="Enter Name"
-                />
-              </div>
-            </div>
-
-            <div className="col-12">
-              <div className="form-group">
-                <label>Address</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="caddress"
-                  name="caddress"
-                  placeholder="Enter Address"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-12">
-              <div className="form-group">
-                <label>phone</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="cphone"
-                  name="cphone"
-                  placeholder="Enter Tel"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-lg-12 col-sm-12">
-              <div className="form-group">
-                <label>Begining Balance</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="beginingBalance"
-                  name="beginingBalance"
-                  placeholder="Enter Begining Balance"
-                />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSubmitt}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>      
-      <div classNameName="contaainer"></div>      
-        </>
+        show={show}
+        validate={validate}
+        />
+       </>
     );
 };
 export default AddCustomer;

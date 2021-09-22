@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "https://petrolmanagement.herokuapp.com/company";
+const url = "http://localhost:8800/company";
 
 class CompanyService {
   getCompanyServiceAll() {

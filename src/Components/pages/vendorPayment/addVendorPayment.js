@@ -22,6 +22,11 @@ const AddPayment = () => {
   // const [used_balance, setsed_balance] = useState(0);
   const [vendorInloan, setvendorInloan] = useState([]);
 
+
+ 
+
+
+// get all payment
   const getallPayment = () => {
     PayVendorService.getPayment().then((response) => {
       setPayment(response.data);
@@ -48,8 +53,8 @@ const AddPayment = () => {
       </td>
       <td>${vendor.p_type}</td>
       <td>${vendor.numofliter}</td>
-      <td>$${vendor.amountpaid}</td>
       <td>$${vendor.totalAmount}</td>
+      <td>$${vendor.amountpaid}</td>
       <td>$${
        (i==0) ?  vendor.v_begining_balance : 0
       }</td>
@@ -89,14 +94,26 @@ const AddPayment = () => {
   }
 
   //EDIT GET BRANCH BY ID
-  const editPayment = (id) => {
+  const details = (id) => {
     handleShow()
-    vendor()
-    PayVendorService.getPaymentId(id).then(response => {
-      console.log(response.data);
-      $('#amount').val(response.data.amount)
-      $('#vendorId').val(response.data.vendorId).change()
-      $('#pymntid').val(response.data.pymntid)
+    // customer()
+    PayVendorService.PaymentDetails(id).then(response => {
+      console.log(response.data)
+      
+      response.data.forEach(element => {
+        $("#payment_details").append(
+          `
+          <tr>
+          <td>${element.p_type}</td>
+          <td>${element.quantity}</td>
+          <td>${element.paying_amount}</td>
+          <td>${element.amount}</td>
+          <td className="text-right">${element.remaining}</td>
+          </tr>
+          `
+        )
+        
+      });      
 
     })
   }
@@ -133,6 +150,50 @@ const AddPayment = () => {
 
   return (
     <>
+      
+      <Modal show={show} onHide={handleClose}
+        size="lg"
+      >
+        
+        <Modal.Header closeButton>
+          <Modal.Title>Payment Detils</Modal.Title>
+          
+        </Modal.Header>
+        
+        <Modal.Body>
+          <div className="row">
+            <div class="col-lg-12">
+            <table class="table table-striped">
+               <thead class="bg-primary  " style={{color:"white"}}>
+                  <tr>
+                      <th>Petrol Type</th>
+                      <th>Number Of Liters</th>
+                    <th>Paid Amount</th>
+                    <th>Amount</th>
+                    <th>Remaining</th>           
+                  </tr>
+               </thead>
+                <tbody id="payment_details" style={{fontWeight:"bold",color:"Blue"}}>
+                  
+                  
+                      </tbody>
+              </table>
+              
+              </div>
+            </div>
+        </Modal.Body>
+        
+        <Modal.Footer>
+
+          <Button variant="primary btn-block " onClick={handleClose}>
+            Close
+          </Button>
+         
+        </Modal.Footer>
+        
+      </Modal>      
+     
+
     <PaymentForm 
     vendorInloan={vendorInloan}
     getallPayment={getallPayment}
@@ -141,7 +202,7 @@ const AddPayment = () => {
       <Payment
         payment={payment}
         deletePayment={deletePayment}
-        editPayment={editPayment}
+        details={details}
       />
 
       <ToastContainer />
@@ -171,11 +232,12 @@ const PaymentForm = ({vendorInloan,getallPayment,vendors})=>{
 
     //transections
    let rows = $("#payment tbody").children("tr");
-   for (let row of rows) {
+    for (let row of rows) {
+     
      let  payingAmount = $(row).children('td').children('input.amountpaying').val()
      let  purchaseId = $(row).children('td').children('input.checkbox').val()
-     let  purchaseAmountRemainig = $(row).children('td').last().prev().prev().prev().text().substring(1)-
-     $(row).children('td').last().prev().prev().prev().prev().text().substring(1)
+     let  purchaseAmountRemainig = $(row).children('td').last().prev().prev().prev().prev().text().substring(1)-
+     $(row).children('td').last().prev().prev().prev().text().substring(1)
      if(Number(payingAmount)>0){
         purchasePayments.push({
           purchaseId,
@@ -203,9 +265,16 @@ const PaymentForm = ({vendorInloan,getallPayment,vendors})=>{
     ])
 
     if (inputs !== null) {
-     
-        PayVendorService.savePayment(formData).then((response) => {
 
+      var purchasepayedAmount = 0;
+      for (let rows of $("#payment tbody").children("tr")) {
+        purchasepayedAmount += Number($(rows).children('td').children('input.amountpaying').val())
+      }
+
+      if (purchasepayedAmount==0) {
+        toast.error('Applay amount')
+      } else {
+        PayVendorService.savePayment(formData).then((response) => {
           if ($('#pymntid').val() > 0) {
             toast.info('Paid Successfully Updated ..')
             $('#pymntid').val(0)
@@ -224,6 +293,9 @@ const PaymentForm = ({vendorInloan,getallPayment,vendors})=>{
 
          vendors()
         })
+      }
+     
+        
     }
   }
 
@@ -282,8 +354,8 @@ const PaymentForm = ({vendorInloan,getallPayment,vendors})=>{
                   <th>#</th>
                   <th>Type</th>
                   <th>Number of liter</th>
-                  <th>Paid Amount</th>
                   <th>Amount</th>
+                  <th>Paid Amount</th>
                   <th>begining balance</th>
                   <th>Renmaining </th>
                   <th>pay amount</th>
@@ -332,6 +404,7 @@ $(document).ready(() => {
             .val(Number(balance));
           used_balance += Number(balance);
           balance -= Number(balance);
+          // alert(balance)
         } else {
           $(this)
             .closest("tr")

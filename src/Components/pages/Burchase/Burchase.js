@@ -2,6 +2,7 @@ import React from "react";
 import MaterialTable from "material-table";
 
 const Burchase = ({ burchase, deleteBurchase, editBurchase }) => {
+  let index = 0;
   return (
     <div>
       <div className="row">
@@ -14,7 +15,10 @@ const Burchase = ({ burchase, deleteBurchase, editBurchase }) => {
                 columns={[
                   {
                     title: "Id",
-                    field: "pid",
+                    export: true,
+                    render: () => {
+                      return ++index
+                    },
                   },
                   {
                     title: "vendor name",
@@ -39,11 +43,16 @@ const Burchase = ({ burchase, deleteBurchase, editBurchase }) => {
                     title: "Paid Amount",
                     field: "amountPaid",
                   },
+                  {
+                    title: "Branch",
+                    field: "employeeModel.branch.branchName",
+                  },
                 ]}
                 actions={[
                   {
                     icon: "edit",
                     tooltip: "edit",
+                    iconProps: {style: { color: "#01579b" }},
                     onClick: (event, rowData) => {
                       editBurchase(rowData.pid);
                     },
@@ -51,6 +60,7 @@ const Burchase = ({ burchase, deleteBurchase, editBurchase }) => {
                   (rowData) => ({
                     icon: "delete",
                     tooltip: "Delete Burchase",
+                    iconProps: {style: { color: "#CA0B00" }},
                     onClick: (event, rowData) => {
                       deleteBurchase(rowData.pid);
                     },

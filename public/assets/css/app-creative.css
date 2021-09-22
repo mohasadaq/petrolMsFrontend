@@ -550,7 +550,7 @@ body[data-sidebar-icon="twotones"] #sidebar-menu > ul > li > a svg {
   display: none; }
 
 .navbar-custom {
-  background-color: #3c4854;
+  background-color: #01579b;
   box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0.15);
   padding: 0 10px 0 0;
   position: fixed;
@@ -570,7 +570,7 @@ body[data-sidebar-icon="twotones"] #sidebar-menu > ul > li > a svg {
     text-align: center;
     max-height: 70px; }
   .navbar-custom .dropdown.show .nav-link {
-    background-color: rgba(255, 255, 255, 0.05); }
+    background-color: #01579b }
   .navbar-custom .container-fluid {
     padding: 0; }
   .navbar-custom .app-search {

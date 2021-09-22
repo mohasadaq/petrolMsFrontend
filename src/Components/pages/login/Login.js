@@ -12,7 +12,7 @@ const login_author = ()=>{
   let input =  Appfunction.validate_form_inputs(['empUsername','empPassword'])
   if(input!==null){
       axios
-        .post("https://petrolmanagement.herokuapp.com/Employee/checklogin", {
+        .post("http://localhost:8800/Employee/checklogin", {
           empUsername: $("#empUsername").val(),
           empPassword: $("#empPassword").val(),
         })
@@ -24,9 +24,18 @@ const login_author = ()=>{
             localStorage.setItem("employeeName", response.data.empName);
             localStorage.setItem("empId", response.data.emId);
             localStorage.setItem("empPassword",response.data.empPassword);
+            localStorage.setItem("username", response.data.empUsername);
+            localStorage.setItem("branchId", response.data.branchId);
+              
+              console.log(response.data)
+              localStorage.setItem("usertype", response.data.usertype);
             EmployeeService.getSubMenues().then(response => {
-                let submenues = response.data.filter((menue)=> menue.emp_id==localStorage.getItem('empId'))
-                window.location.href =submenues[0].link;
+                let submenues = response.data.filter((menue) => menue.emp_id == localStorage.getItem('empId'))
+                if (submenues.length>0) {
+                    window.location.href =submenues[0].link;
+                } else {
+                    toast.error('contact system admin')
+                }
               })
 
           }
@@ -37,8 +46,64 @@ const login_author = ()=>{
 
         return (
           <>
-          <ToastContainer/>
-         <div className="account-pages mt-5 mb-5">
+                <ToastContainer />
+                
+                <div class="limiter">
+		            <div class="container-login100">
+			<div class="wrap-login100">
+				<div class="login100-pic js-tilt" data-tilt>
+					<img src="/assets/images/kamil.jpeg" alt="IMG"/>
+				</div>
+
+				<div class="login100-form">
+					<span class="login100-form-title">
+						Member Login
+					</span>
+
+					<div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
+						<input class="input100" type="text" id="empUsername" placeholder="Username"/>
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-envelope" aria-hidden="true"></i>
+						</span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Password is required">
+						<input class="input100" type="password" id="empPassword" placeholder="Password"/>
+						<span class="focus-input100"></span>
+						<span class="symbol-input100">
+							<i class="fa fa-lock" aria-hidden="true"></i>
+						</span>
+					</div>
+					
+					<div class="container-login100-form-btn">
+                        <button class="login100-form-btn" type='button' onClick={()=>{login_author()}}>
+                            Login
+                        </button>
+                    </div>
+
+					
+
+					
+				</div>
+			</div>
+                    </div>
+                    
+                </div>
+                
+                
+                <div class="animation-area">
+                    <ul class="box-area">
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    </div>
+                
+         {/* <div className="account-pages mt-5 mb-5">
           <div className="container">
               <div className="row justify-content-center">
                   <div className="col-md-8 col-lg-6 col-xl-4">
@@ -72,9 +137,16 @@ const login_author = ()=>{
                                   <div className="mb-3">
                                       <label  className="form-label">Password</label>
                                       <div className="input-group input-group-merge">
-                                          <input type="text" id="empPassword" className="form-control" placeholder="Enter your password"/>
+                                          <input type="password" id="empPassword" className="form-control" placeholder="Enter your password"/>
                                           <div className="input-group-text" data-password="false">
-                                              <span className="password-eye"></span>
+                                             <span onClick={() => {
+                                            var type = document.getElementById('empPassword').type;
+                                            if (type == 'password')
+                                                document.getElementById('empPassword').type = 'text'
+                                           else
+                                             document.getElementById('empPassword').type = 'password'    
+                                                
+                                              }} className="password-eye"></span>
                                           </div>
                                       </div>
                                   </div>
@@ -118,7 +190,8 @@ const login_author = ()=>{
               </div>
           </div>
       </div>
-      </>
+      */}
+            </>
         );
 }
 

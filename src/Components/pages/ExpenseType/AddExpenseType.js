@@ -48,6 +48,10 @@ export const  AddExpenseType =() => {
         });
       }
     }
+    function validate() {
+      var element = document.getElementById('exptype');
+      element.value = element.value.replace(/[^a-zA-Z@]+/, '');
+    };
     const editExpense =(id) =>{
       ExpenseService.getOneExpense(id).then((response)=>{
         console.log(response.data)
@@ -69,11 +73,16 @@ export const  AddExpenseType =() => {
         if (result.isConfirmed) {
           ExpenseService.deleteExpense(expid).then((response)=>{
             console.log(response.data)
-            Swal.fire(
-              'Deleted!',
-              'Expense Type has been deleted.',
-              'success'
-              ) 
+            if (response.data) {
+              Swal.fire(
+                'Deleted!',
+                'Expense Type has been deleted.',
+                'success'
+                ) 
+            } else {
+              toast.error('Is refrenced another table')
+            }
+           
             getallExpense();
   
           });
@@ -138,6 +147,7 @@ export const  AddExpenseType =() => {
                   id="exptype"
                   aria-describedby="exptype"
                   placeholder="Enter Name"
+                  onKeyUp ={validate}
                 />
               </div>
             </div>
@@ -152,7 +162,8 @@ export const  AddExpenseType =() => {
           </Button>
         </Modal.Footer>
       </Modal>      
-      <div classNameName="contaainer"></div>      
+     
+        <div classNameName="contaainer"></div>
         </>
     );
 };

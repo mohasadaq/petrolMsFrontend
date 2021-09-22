@@ -2,6 +2,8 @@ import React from 'react'
 import MaterialTable from 'material-table'
 import Icons from '../Icons'
 const PetrolType = ({ PetrolType, deletePetrolType, editPetrolType }) => {
+
+  let index = 0;
     return (
       <div>
         <div className="row">
@@ -13,8 +15,11 @@ const PetrolType = ({ PetrolType, deletePetrolType, editPetrolType }) => {
                   data={PetrolType}
                   columns={[
                     {
-                      title: "PtId",
-                      field: "ptId",
+                      title: "Id",
+                      export: true,
+                      render: () => {
+                        return ++index
+                      },
                     },
                     {
                       title: "Petrol Type",
@@ -25,13 +30,15 @@ const PetrolType = ({ PetrolType, deletePetrolType, editPetrolType }) => {
                     {
                       icon: "edit",
                       tooltip: "edit",
+                      iconProps: {style: { color: "#01579b" }},
                       onClick: (event, rowData) => {
                         editPetrolType(rowData.ptId);
                       },
                     },
                     (rowData) => ({
-                      icon: "edit",
+                      icon: "delete",
                       tooltip: "Delete User",
+                      iconProps: {style: { color: "#CA0B00" }},
                       onClick: (event, rowData) => {
                         deletePetrolType(rowData.ptId);
                       },

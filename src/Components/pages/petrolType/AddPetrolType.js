@@ -67,12 +67,18 @@ import { Button, Modal } from "react-bootstrap";
         confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
         if (result.isConfirmed) {
-          PetrolTypeService.deletePetrolType(id).then((resoponse)=>{
-            Swal.fire(
-              'Deleted!',
-              'Petrol Type has been deleted.',
-              'success'
-              )     
+          PetrolTypeService.deletePetrolType(id).then((resoponse) => {
+            if (resoponse.data) {
+              Swal.fire(
+                'Deleted!',
+                'Petrol Type has been deleted.',
+                'success'
+              )
+            }
+            else {
+              toast.error('Is refrenced another table')
+            }
+           
             getAllPetroltype();
           })
        
@@ -80,6 +86,11 @@ import { Button, Modal } from "react-bootstrap";
         })
      
     }
+    function validate() {
+      var element = document.getElementById('p_type');
+      element.value = element.value.replace(/[^a-zA-Z@]+/, '');
+      
+    };
 
     //GET PETROL TYPE BY ID
     const editPetrolType = (id) =>{
@@ -115,6 +126,7 @@ import { Button, Modal } from "react-bootstrap";
         </div>
       </div>
 
+
       <PetrolType
         PetrolType={petrolType}
         deletePetrolType={deletePetrolType}
@@ -125,7 +137,7 @@ import { Button, Modal } from "react-bootstrap";
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Petrol Type</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {/* <form> */}
@@ -147,6 +159,7 @@ import { Button, Modal } from "react-bootstrap";
                   id="p_type"
                   name="p_type"
                   placeholder="Enter petrol type"
+                  onKeyUp={validate}
                 />
               </div>
             </div>      

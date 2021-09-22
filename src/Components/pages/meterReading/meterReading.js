@@ -7,6 +7,7 @@ const MeterReading = ({
   deleteMeterReading,
   editMeterReading,
 }) => {
+  let index=0
   return (
     <>
       <div>
@@ -14,6 +15,7 @@ const MeterReading = ({
           <div className="col-12">
             <div className="card">
               <div className="card-body">
+                
                 <MaterialTable
                   onRowClick={(event, rowData) => {
                     if (rowData.numberofliterinloan == 0)
@@ -24,7 +26,10 @@ const MeterReading = ({
                   columns={[
                     {
                       title: "Id",
-                      field: "mtrrdId",
+                      export: true,
+                      render: () => {
+                        return ++index
+                      },
                     },
                     {
                       title: "petrol type",
@@ -64,11 +69,16 @@ const MeterReading = ({
                         }`;
                       },
                     },
+                    {
+                      title: "Branch",
+                      field: "employeeModel.branch.branchName",
+                    },
                   ]}
                   actions={[
                     {
                       icon: "edit",
                       tooltip: "edit",
+                      iconProps: {style: { color: "#01579b" }},
                       onClick: (event, rowData) => {
                         editMeterReading(rowData.mtrrdId);
                       },
@@ -76,6 +86,7 @@ const MeterReading = ({
                     (rowData) => ({
                       icon: "delete",
                       tooltip: "Delete Burchase",
+                      iconProps: {style: { color: "#CA0B00" }},
                       onClick: (event, rowData) => {
                         deleteMeterReading(rowData.mtrrdId);
                       },

@@ -14,7 +14,7 @@ import AddVendor from "./pages/vendor/AddVendor";
 import AddExpenseType from "./pages/ExpenseType/AddExpenseType";
 import AddExpense from "./pages/Expense/AddExpense";
 
-import AddBranch from "./pages/Branch/AddBranch";
+import AddBranch from "./pages/branch/AddBranch";
 import AddBurchase from "./pages/Burchase/AddBurchase";
 import AddPetrolType from "./pages/petrolType/AddPetrolType";
 
@@ -26,6 +26,11 @@ import Layout from "../Components/pages/Layout";
 import Payment from "../Components/pages/Payment/addPayment";
 import VendorPayment from "../Components/pages/vendorPayment/addVendorPayment";
 import SalesReport from "../Components/pages/Reports/salesReport";
+
+import TotalMoneyDetails from "./pages/dashboard/totalMoneyDetails";
+
+
+
 const Routes = () => (
   <Switch>
     <Route exact path="/" exact component={Login} />
@@ -48,7 +53,9 @@ const Routes = () => (
     <Route exact path="/system_setting" component={system_setting} />
     <Route exact path="/payvendor" component={VendorPayment} />
     <Route exact path="/profile" component={profile} />
+    
     <Route exact path="/change" component={change} />
+    <Route exact path="/totalMoney" component={TotalMoneyDetails} />
 
     <Route path="*" component={Notfound} />
   </Switch>

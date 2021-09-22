@@ -1,10 +1,11 @@
 import React from 'react'
 import MaterialTable from 'material-table'
 
-const ExpenseType = ({expensetype,deleteExpense,editExpense}) => {
+const ExpenseType = ({ expensetype, deleteExpense, editExpense }) => {
+  let index=0
     return (
         <div>
-              <div class="row">
+      <div class="row">
         <div class="col-12">
           <div class="card">
             <div class="card-body">
@@ -14,8 +15,11 @@ const ExpenseType = ({expensetype,deleteExpense,editExpense}) => {
                 data={expensetype}
                 columns={[
                   {
-                    title: 'Id',
-                    field: 'expid'
+                    title: "Id",
+                    export: true,
+                    render: () => {
+                      return ++index
+                    },
                   },
                   {
                     title: 'Expense Type',
@@ -27,6 +31,7 @@ const ExpenseType = ({expensetype,deleteExpense,editExpense}) => {
                   {
                     icon: 'edit',
                     tooltip: 'edit',
+                    iconProps: {style: { color: "#01579b" }},
                     onClick: (event, rowData) => {
                       editExpense(rowData.expid)
                     }
@@ -34,6 +39,7 @@ const ExpenseType = ({expensetype,deleteExpense,editExpense}) => {
                   rowData => ({
                     icon: 'delete',
                     tooltip: 'Delete User',
+                    iconProps: {style: { color: "#CA0B00" }},
                     onClick: (event, rowData) => {
                       deleteExpense(rowData.expid)
                     }

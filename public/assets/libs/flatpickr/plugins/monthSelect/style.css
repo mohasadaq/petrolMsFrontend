@@ -2,6 +2,10 @@
   margin: 10px 1px 3px 1px;
   flex-wrap: wrap;
 }
+.text_danger{
+  font-family: bold;
+  color: red;
+}
 
 .flatpickr-monthSelect-month {
   background: none;

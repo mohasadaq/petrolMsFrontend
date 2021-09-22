@@ -1,8 +1,9 @@
 import React from 'react'
 import MaterialTable from 'material-table'
 
-const Loan = ({transection , deleteTransection, editTransection}) => {
+const Transection = ({transection , deleteTransection, editTransection}) => {
 
+  let index=0
     return (
       <div>
         <div className="row">
@@ -14,8 +15,11 @@ const Loan = ({transection , deleteTransection, editTransection}) => {
                   data={transection}
                   columns={[
                     {
-                      title: "Tr No",
-                      field: "trnsId",
+                      title: "Id",
+                      export: true,
+                      render: () => {
+                        return ++index
+                      },
                     },
                     {
                       title: "Customer",
@@ -30,31 +34,41 @@ const Loan = ({transection , deleteTransection, editTransection}) => {
                       field: "numofliter",
                     },
                     {
+                      render: (transection) => {
+                        return `$${transection.priceperLiter}`;
+                      },
                       title: "Price per Liter",
-                      field: "priceperLiter",
                     },
                     {
-                      title: "Amount paid",
-                      field: "amountpaid",
-                    },
-                    {
-                      render: (loan) => {
-                        return `$${loan.numofliter * loan.priceperLiter}`;
+                      render: (transection) => {
+                        return `$${transection.numofliter * transection.priceperLiter}`;
                       },
                       title: "Amount",
+                    },
+                    {
+                      render: (transection) => {
+                        return `$${transection.amountpaid}`;
+                      },
+                      title: "Amount paid",
+                    },
+                    {
+                      title: "Branch",
+                      field: "employeeModel.branch.branchName",
                     },
                   ]}
                   actions={[
                     {
                       icon: "edit",
                       tooltip: "Edit",
+                      iconProps: {style: { color: "#01579b" }},
                       onClick: (event, rowData) => {
                         editTransection(rowData.trnsId);
                       },
                     },
                     (rowData) => ({
                       icon: "delete",
-                      tooltip: "Delete Loan",
+                      iconProps: {style: { color: "#CA0B00" }},
+                      tooltip: "Delete Transection",
                       onClick: (event, rowData) => {
                         deleteTransection(rowData.trnsId);
                       },
@@ -76,4 +90,4 @@ const Loan = ({transection , deleteTransection, editTransection}) => {
       </div>
     );
 }
-export default Loan;
+export default Transection;

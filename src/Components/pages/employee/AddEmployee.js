@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import EmployeeService from "../../../service/EmployeeService";
-import EmployeeList from "./Employee";
 import $ from "jquery";
 import AppFunction from "../../app";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Swal from 'sweetalert2'
 
-import Layout from '../Layout'
+import EmployeeHtml from './employeeHtml'
 
 
 // or less ideally
-import { Button, Modal, Alert } from "react-bootstrap";
 import BranchService from "../../../service/BranchService";
 
 const Modelform = () => {
@@ -18,9 +17,8 @@ const Modelform = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [employee, setEmployee] = useState([]);
-  const [showNumber, setshowNumber] = useState(0);
 
- 
+  const [showNumber, setshowNumber] = useState(0); 
   const getAllemployee = () => {
     EmployeeService.getEmployeeList().then((response) => {
       // console.log(response.data);
@@ -56,21 +54,40 @@ const Modelform = () => {
       "branchId"
     ]);
     if (inputs !== null) {
-      EmployeeService.saveEmployee(data).then((response) => {
-        if ($("#emId").val() > 0) {
-          toast.warn("Employee Successfully  Updated ..");
-          $("#emId").val(0);
-        } else {
-          toast.success("Employee Successfully  Saved ..");
-        }
-        getAllemployee();
-        handleClose();
-      });
+      let emp = employee.filter((em => em.empUsername == $ ("#empUsername").val()));
+      if(emp.length >0 && $("#emId").val() <1)
+      {
+       toast.error("username exists")
+      }
+      else {        
+     
+          
+          EmployeeService.saveEmployee(data).then((response) => {
+
+            if ($("#emId").val() > 0) {
+              toast.warn("Employee Successfully  Updated ..");
+              $("#emId").val(0);
+            } else {
+              toast.success("Employee Successfully  Saved ..");
+            }
+            getAllemployee();
+            handleClose();
+          });
+        
+        
+      }      
     }
   };
 
+  function validate() {
+    var element = document.getElementById('empName');
+    element.value = element.value.replace(/[^a-zA-Z@]+/, '');
+  };
+  
   const branch = () => {
-  BranchService.getBranchAll().then(response=>{
+    BranchService.getBranchAll().then(response => {
+    
+
     response.data.map((branch)=>{
       $("#branchId").append(`
       <option value="${branch.bId}">${branch.branchName}</option>
@@ -98,177 +115,49 @@ const Modelform = () => {
     });
   };
 
-  const deleteEmployee = (empId) => {
-    EmployeeService.deleteEmployee(empId).then((response) => {
-      toast.error("Employee deleted ..");
-      getAllemployee();
-    });
-  };
+  const deleteEmployee =(empId)=>{
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't to delete this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+      if (result.isConfirmed) {
+        EmployeeService.deleteEmployee(empId).then((response) => {
+          Swal.fire(
+            'Deleted!',
+            'Employee has been deleted.',
+            'success'
+            ) 
+          getAllemployee();
+        });
+     
+      }
+      })
+  
+  }
+
+
+ 
 
   return (
     <>
-      <div className="row">
-        <div className="col-12">
-          <div className="card-box">
-            <div className="row">
-              <div className="col-lg-8"></div>
-              <div className="col-lg-4">
-                <div className="text-lg-right mt-3 mt-lg-0">
-                  <Button
-                    variant="primary"
-                    className="waves-effect waves-light float-right mt-0"
-                    onClick={()=> {
-                      handleShow();
-                      branch()
-                    }}
-                  >
-                    <i className="mdi mdi-plus-circle mr-1"></i>
-                    Add Employee
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <EmployeeList
-        employee={employee}
-        deleteEmployee={deleteEmployee}
-        editEmployee={editEmployee}
-      />
-      <ToastContainer />
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Employee</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* <form> */}
-          <input
-            type="hidden"
-            name="empId"
-            className="form-control"
-            id="emId"
-            aria-describedby="empName"
-            placeholder="Enter Name"
-          />
-          <div className="row">
-            <div className="col-lg-6 col-sm-12">
-              <div className="form-group">
-                <label>Name</label>
-                <input
-                  type="text"
-                  name="empName"
-                  className="form-control"
-                  id="empName"
-                  aria-describedby="empName"
-                  placeholder="Enter Name"
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-6 col-sm-12">
-              <div className="form-group">
-                <label>Address</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="empAddress"
-                  name="empAddress"
-                  placeholder="Enter Address"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-6 col-sm-12">
-              <div className="form-group">
-                <label>Tel</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="empTell"
-                  name="empTell"
-                  placeholder="Enter Tel"
-                />
-              </div>
-            </div>
-            <div className="col-lg-6 col-sm-12">
-              <div className="form-group">
-                <label>Gender</label>
-
-                <select className="form-control" id="empGender">
-                  <option value="">Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-lg-6 col-sm-12">
-              <div className="form-group">
-                <label>Username</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="empUsername"
-                  name="empUsername"
-                  placeholder="Enter Username"
-                />
-              </div>
-            </div>
-            <div className="col-lg-6 col-sm-12">
-              <div className="form-group">
-                <label>Password</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="empPassword"
-                  name="empPassword"
-                  placeholder="Enter Password"
-                />
-              </div>
-            </div>
-          </div>
-          <div className="row">
-          <div className="col-12">
-              <div className="form-group">
-                <label>User Type</label>
-
-                <select className="form-control" id="usertype">
-                  <option value="">Select user type</option>
-                  <option value="Admin">Admin</option>
-                  <option value="User">User</option>
-                </select>
-              </div>
-            </div>
-            </div>
-          <div className="row">
-            <div className="col-12">
-              <div className="form-group">
-                <label>Branch</label>
-
-                <select className="form-control" id="branchId">
-                  <option value="">Select Branch</option>
-                 
-                </select>
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSubmitt}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <div className="contaainer"></div>
+     <EmployeeHtml
+     handleSubmitt={handleSubmitt}
+     validate={validate}
+     editEmployee={editEmployee}
+     deleteEmployee={deleteEmployee}
+     ToastContainer={ToastContainer}
+     show={show}
+     branch={branch}
+    showNumber={showNumber}
+    handleClose={handleClose}
+    handleShow={handleShow}
+    employee={employee}
+     />
     </>
   );
 };

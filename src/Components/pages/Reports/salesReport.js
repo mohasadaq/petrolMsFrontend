@@ -1,106 +1,159 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import $ from "jquery";
-import SalesReport from "../../../service/salesReport";
+import SalesReports from "../../../service/salesReport";
+import DashboardSerice from "../../../service/dashboarService";
 
-export default function salesReport() {
-  SalesReport.getSalesReport().then((response) => {
-    //   alert(response.data[0].Tr_Number_Of_literes_Sold)
-    let tr_amount = 0;
-    let mr_amount = 0;
-    let i = 0;
-    response.data.forEach((element) => {
-      i++;
-      tr_amount += Number(element.tr_Amount);
-      $("#tr_usd").text(tr_amount);
+import * as am4charts from "@amcharts/amcharts4/charts";
+import * as am4core from "@amcharts/amcharts4/core";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
-      mr_amount += Number(element.mr_Number_Of_price_literes_Sold);
-      $("#mr_usd").text(mr_amount);
+am4core.useTheme(am4themes_animated);
 
-      $("#transections_tb").append(
-        `<tr>
-          <td>${i}</td>
-          <td>${element.p_type}</td>
-          <td>${element.Tr_Number_Of_literes_Sold}</td>
-          <td>${element.tr_Amount}</td>
+export default function SalesReport() {
+  const [t_money, setT_money] = useState([]);
+ 
+  useEffect(() => {
+    getdata()
+    getNumOfLiterSold()
+    getTotalExpenses()
+  }, []);
 
-          
-          </tr>`
-      );
-      $("#transaction_tb").append(
-        `<tr>
-        <td>${i}</td>
-        <td>${element.p_type}</td>
-        <td>${element.mr_Number_Of_literes_Sold}</td>
-        <td>${element.mr_Number_Of_price_literes_Sold}</td>
-        </tr>`
-      );
-    });
+  const getdata = () => {
+  DashboardSerice.getTotalMoney().then((response) => {
+    amchart(response.data)
   });
+  }
+
+
+  const getNumOfLiterSold = () => {
+    DashboardSerice.getNumberOfLiteresSold().then((response) => {
+      numOfLiterSold(response.data)
+    });
+  }
+  
+  const getTotalExpenses = () => {
+    DashboardSerice.getTotalExpense().then((response) => {
+      expenses(response.data)
+    });
+    }
+  
+
+  const amchart = (res) => {
+    am4core.addLicense("ch-custom-attribution");
+  let chart = am4core.create("chart", am4charts.PieChart3D);
+    res.forEach(test => {
+      chart.data.push(
+        test
+      )
+    })
+    // Add and configure Series
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    pieSeries.dataFields.value = "Total_Amount";
+    pieSeries.dataFields.category = "branch_name";
+    pieSeries.slices.template.stroke = am4core.color("#fff");
+    pieSeries.slices.template.strokeWidth = 2;
+    pieSeries.slices.template.strokeOpacity = 1;
+    
+    // This creates initial animation
+    pieSeries.hiddenState.properties.opacity = 1;
+    pieSeries.hiddenState.properties.endAngle = -90;
+    pieSeries.hiddenState.properties.startAngle = -90;
+    
+    // this.chart = chart;
+
+  }
+
+  const numOfLiterSold = (res) => {
+    let chart = am4core.create("charts", am4charts.PieChart3D);
+      res.forEach(test => {
+        chart.data.push(
+          test
+        )
+      })
+      // Add and configure Series
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    
+    pieSeries.colors.list = [
+      am4core.color("#845EC2"),
+      am4core.color("#D65DB1"),
+      am4core.color("#FF6F91"),
+      am4core.color("#FF9671"),
+      am4core.color("#FFC75F"),
+      am4core.color("#F9F871"),
+    ];
+
+      pieSeries.dataFields.value = "numOfLiterSold";
+      pieSeries.dataFields.category = "branch_name";
+      pieSeries.slices.template.stroke = am4core.color("#fff");
+      pieSeries.slices.template.strokeWidth = 2;
+      pieSeries.slices.template.strokeOpacity = 1;
+      
+      // This creates initial animation
+      pieSeries.hiddenState.properties.opacity = 1;
+      pieSeries.hiddenState.properties.endAngle = -90;
+      pieSeries.hiddenState.properties.startAngle = -90;
+      
+      // this.chart = chart;
+  
+  }
+  
+  const expenses = (res) => {
+    let chart = am4core.create("expenses", am4charts.PieChart3D);
+
+      res.forEach(test => {
+        chart.data.push(
+          test
+        )
+      })
+    
+      
+      // Add and configure Series
+    var pieSeries = chart.series.push(new am4charts.PieSeries());
+    
+    pieSeries.colors.list = [
+      am4core.color("#845EC2"),
+      am4core.color("#D65DB1"),
+      am4core.color("#FF6F91"),
+      am4core.color("#FF9671"),
+      am4core.color("#FFC75F"),
+      am4core.color("#F9F871"),
+    ];
+      pieSeries.dataFields.value = "totalExpense";
+      pieSeries.dataFields.category = "branch_name";
+      pieSeries.slices.template.stroke = am4core.color("#fff");
+      pieSeries.slices.template.strokeWidth = 2;
+      pieSeries.slices.template.strokeOpacity = 1;
+      
+      // This creates initial animation
+      pieSeries.hiddenState.properties.opacity = 1;
+      pieSeries.hiddenState.properties.endAngle = -90;
+      pieSeries.hiddenState.properties.startAngle = -90;
+      
+      // this.chart = chart;
+  
+    }
+
+  
   return (
-    <div>
+    <>
       <div className="row">
-        <div className="col-lg-6">
-          <div className="card bg-pattern">
-            <div className="card-body p-0">
-              <div className="text-center">
-                <h4 className="mb-1 font-20">Meter Reading</h4>
-                {/* <p className="text-muted  font-14">Seattle, Washington</p> */}
-              </div>
-              <div className="">
-                <table class="table table-striped">
-                  <thead className="bg-dark  " style={{ color: "white" }}>
-                    <tr>
-                      <th>#</th>
-                      <th>Petrol Type</th>
-                      <th>Liters</th>
-                      <th>USD</th>
-                    </tr>
-                  </thead>
-                  <tbody id="transaction_tb"></tbody>
-                </table>
-              </div>
-
-              <div className="row mt-4 text-right p-2">
-                <div className="col-12">
-                  <h5 className="fw-normal text-muted">Revenue (USD)</h5>
-                  <h3 className="fa fa-dollar-sign" id="mr_usd">
-                    0
-                  </h3>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="col-lg-4 text-center">
+          <h3>Total Money</h3>
+         <div className="chart" style={{width:100 + '%' ,height:200, marginLeft:0}}></div>
         </div>
-        <div className="col-lg-6 ">
-          <div className="card bg-pattern">
-            <div className="card-body p-0">
-              <div className="text-center">
-                <h4 className="mb-1 font-20">Transections</h4>
-              </div>
-              <table class="table table-striped ">
-                <thead className="bg-dark  " style={{ color: "white" }}>
-                  <tr>
-                    <th>#</th>
-                    <th>Petrol Type</th>
-                    <th>Liters</th>
-                    <th>USD</th>
-                  </tr>
-                </thead>
-                <tbody id="transections_tb"></tbody>
-              </table>
 
-              <div className="row mt-4 text-right p-2">
-                <div className="col-12">
-                  <h5 className="fw-normal text-muted">Revenue (USD)</h5>
-                  <h3 className="fa fa-dollar-sign" id="tr_usd">
-                    0
-                  </h3>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>{" "}
-      </div>
-    </div>
+        <div className="col-lg-4 text-center">
+        <h3>Number Of Liter Sold</h3>
+         <div className="charts" style={{width:100 + '%' ,height:200, marginLeft:0}}></div>
+        </div>
+
+        <div className="col-lg-4 text-center">
+        <h3>Expenses</h3>
+         <div className="expenses" style={{width:100 + '%' ,height:200, marginLeft:0}}></div>
+        </div>
+        </div>
+        
+        
+    </>
   );
 }

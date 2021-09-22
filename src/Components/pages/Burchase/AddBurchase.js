@@ -18,6 +18,7 @@ const Addpetrol = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [burchase, setBurchase] = useState([]);
+  const [vendors, setVendors] = useState([]);
 
   const getAllBurchase = () => {
     BurchaseService.getAllBurchase().then((response) => {
@@ -45,11 +46,38 @@ const Addpetrol = () => {
 
   });
 
+
+  // on change vendor
+
+  // $("#vndId").on('change', function () {
+  //   let vendor = vendors.filter(vendor => vendor.vId == $(this).val() && vendor.vBeginingBalance<0);
+    
+  //   // check
+  //   if (vendor.length) {
+  //     $('#oldbalance').html(`
+  //     <smal className="text-muted ">Remainder</smal>
+  //     <strong
+  //       className="fa fa-dollar-sign p-1"
+  //       id="remaining"
+  //       style={{ fontSize: 16 }}
+  //     >
+  //           ${vendor[0].vBeginingBalance.subString(1)}  <span style='color:red'> apply </span>
+  //     </strong>  
+  //     `)
+      
+  //   } else {
+  //     $('#oldbalance').html(``)
+  //   }
+  //     // console.log(vendor);
+  //  })
+
+
   // handal submitt
   const handleSubmitt = (e) => {
     e.preventDefault();
     let data = {
       pid: $("#pid").val(),
+      employeeid: localStorage.getItem("empId"),
       pricePerLiter: $("#pricePerLiter").val(),
       quantity: $("#quantity").val(),
       potroltype_id: $("#potroltype_id").val(),
@@ -87,6 +115,7 @@ const Addpetrol = () => {
 
   const vendor = () => {
     vendorService.getVendorList().then((response) => {
+      setVendors(response.data)
       response.data.map((vendor) => {
         $("#vndId").append(`
         <option value="${vendor.vId}">${vendor.vName}</option>
@@ -167,7 +196,8 @@ const Addpetrol = () => {
       />
       <ToastContainer />
 
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose}
+      size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Purchase</Modal.Title>
         </Modal.Header>
@@ -228,7 +258,7 @@ const Addpetrol = () => {
                   className="form-control"
                   id="pricePerLiter"
                   aria-describedby="sname"
-                  placeholder="Enter Name"
+                  placeholder="Enter price per liter"
                 />
               </div>
             </div>
@@ -238,9 +268,16 @@ const Addpetrol = () => {
             <div className="col-12">
               <div className="form-group">
                 <div class="row">
-                  <div class="col-6">
+                  <div class="col-2">
                     <label>Amount Paid</label>
                   </div>
+
+                  <div className="col-4 text-center">
+                    <label className="" id='oldbalance'>
+                     
+                    </label>
+                  </div>
+
                   <div className="col-6 text-right">
                     <label className="">
                       <smal className="text-muted ">Total Amount</smal>
@@ -261,7 +298,7 @@ const Addpetrol = () => {
                   className="form-control"
                   id="amountPaid"
                   aria-describedby="sname"
-                  placeholder="Enter Name"
+                  placeholder="Enter Amount Paid"
                 />
               </div>
             </div>

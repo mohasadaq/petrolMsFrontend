@@ -28,6 +28,7 @@ const System_setting = () => {
     })
   }
 
+  
 
 
   const submit = (e) => {
@@ -51,7 +52,6 @@ const System_setting = () => {
 
     if (inputs !== null) {
       CompanyService.saveCompanyService(data).then((response) => {
-
         list();
         toast.success("Company Successfully  Saved ..");
         // }
@@ -71,12 +71,15 @@ const System_setting = () => {
       cmpphone: $("#cmpphone").val(),
     };
     CompanyService.getCompanyServiceAll().then((response) => {
-      $("#cmpname").val(response.data[0].cmpname);
-      $("#cmplocation").val(response.data[0].cmplocation);
-      $("#cmpcity").val(response.data[0].cmpcity);
-      $("#cmpfooter").val(response.data[0].cmpfooter);
-      $("#cmpdate").val(response.data[0].cmpdate);
-      $("#cmpphone").val(response.data[0].cmpphone);
+      if (response.data.length > 0) {
+        $("#cmpname").val(response.data[0].cmpname);
+        $("#cmplocation").val(response.data[0].cmplocation);
+        $("#cmpcity").val(response.data[0].cmpcity);
+        $("#cmpfooter").val(response.data[0].cmpfooter);
+        $("#cmpdate").val(response.data[0].cmpdate);
+        $("#cmpphone").val(response.data[0].cmpphone);
+      }
+     
     });
   };
   list();
@@ -236,10 +239,18 @@ const System_setting = () => {
 
 const Roles = ({ menue, subMenue }) => {
   //changePerivilage
+  const [authSubMenue, setAuthSubMenue] = useState([])
 
   useEffect(() => {
     employee()
+    aouthorizedSubmenue()
   }, []);
+
+  const aouthorizedSubmenue = () => {
+    EmployeeService.getSubMenues().then(response => {
+      setAuthSubMenue(response.data)
+    })
+  }
 
   const changePerivilage = () => {
     let data=[];
@@ -256,9 +267,8 @@ const Roles = ({ menue, subMenue }) => {
 
     UserPrevilageService.save(data).then(response=>{
       toast.success('successfully')
-      window.location.href=''
+     window.location.href=''
     })
-    console.log(data)
 
   }
 
@@ -297,8 +307,11 @@ const Roles = ({ menue, subMenue }) => {
 
   const submenutext = (id) => {
     let data = subMenue.filter((sub) => sub.menueId == id)
+    let submn = authSubMenue.filter((submenu) => submenu.id == id);
+// console.log(submn)
     return data.map((sub) => (
       <a className="dropdown-item " href="javascript: void(0);">
+        
         <input type="checkbox" id={sub.text.split(' ').join('_')} value={sub.id} className='mx-2' />
         {sub.text}
       </a>

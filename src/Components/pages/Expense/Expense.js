@@ -1,7 +1,9 @@
 import React from 'react'
 import MaterialTable from 'material-table'
 
-const Burchase = ({expense , deleteExpense, editExpense}) => {
+const Burchase = ({ expense, deleteExpense, editExpense }) => {
+  
+  let index=0
     return (
       <div>
         <div class="row">
@@ -14,11 +16,14 @@ const Burchase = ({expense , deleteExpense, editExpense}) => {
                   columns={[
                     {
                       title: "Id",
-                      field: "expId",
+                      export: true,
+                      render: () => {
+                        return ++index
+                      },
                     },
                     {
                       title: "Branch Name",
-                      field: "branchModel.branchName",
+                      field: "employeeModel.branch.branchName",
                     },
                     {
                       title: "Expense Type",
@@ -28,11 +33,16 @@ const Burchase = ({expense , deleteExpense, editExpense}) => {
                       title: "Amount",
                       field: "expAmount",
                     },
+                    {
+                      title: "Employee Name",
+                      field: "employeeModel.empName",
+                    }
                   ]}
                   actions={[
                     {
                       icon: "edit",
                       tooltip: "edit",
+                      iconProps: {style: { color: "#01579b" }},
                       onClick: (event, rowData) => {
                         editExpense(rowData.expId);
                       },
@@ -40,6 +50,8 @@ const Burchase = ({expense , deleteExpense, editExpense}) => {
                     (rowData) => ({
                       icon: "delete",
                       tooltip: "Delete Burchase",
+                      
+                      iconProps: {style: { color: "#CA0B00" }},
                       onClick: (event, rowData) => {
                         deleteExpense(rowData.expId);
                       },

@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "https://petrolmanagement.herokuapp.com/transection";
+const url = "http://localhost:8800/transection";
 class PetrolTypeService {
    
     getLoanList (){

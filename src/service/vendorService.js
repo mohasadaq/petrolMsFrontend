@@ -20,6 +20,10 @@ class VendorService {
 
   vendor_inLoan(){
     return axios.get(`${url}/vendorInLoan`)
-}
+  }
+
+  
+  
+  //
 }
 export default new VendorService ();

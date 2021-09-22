@@ -2,6 +2,8 @@ import React from "react";
 import MaterialTable from 'material-table'
 
 const vendor = ({ vendor, deleteVendor, editVendor }) => {
+
+  let index=0
   return (
     <div>
       <div className="row">
@@ -14,7 +16,10 @@ const vendor = ({ vendor, deleteVendor, editVendor }) => {
                 columns={[
                   {
                     title: "Id",
-                    field: "vId",
+                    export: true,
+                    render: () => {
+                      return ++index
+                    },
                   },
                   {
                     title: "Name",
@@ -32,18 +37,24 @@ const vendor = ({ vendor, deleteVendor, editVendor }) => {
                     title: "Balance",
                     field: "vBalance",
                   },
+                  {
+                    title: "Branch",
+                    field: "employeeModel.branch.branchName",
+                  },
                   //
                 ]}
                 actions={[
                   {
                     icon: "edit",
                     tooltip: "edit",
+                    iconProps: {style: { color: "#01579b" }},
                     onClick: (event, rowData) => {
                       editVendor(rowData.vId);
                     },
                   },
                   (rowData) => ({
                     icon: "delete",
+                    iconProps: {style: { color: "#CA0B00" }},
                     tooltip: "Delete vendor",
                     onClick: (event, rowData) => {
                       deleteVendor(rowData.vId);

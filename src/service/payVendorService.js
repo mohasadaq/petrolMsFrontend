@@ -1,5 +1,5 @@
 import axios from 'axios'
-const url = "https://petrolmanagement.herokuapp.com/payVedor";
+const url = "http://localhost:8800/payVedor";
 
 class PayVendorService {
     getPayment(){
@@ -14,5 +14,11 @@ class PayVendorService {
     deletePayment(id){
         return axios.delete(`${url}/delete/${id}`)
     }
+
+    PaymentDetails(id){
+        return axios.get(`${url}/details/${id}`)
+      }
+
+    
 }
 export default new PayVendorService ();

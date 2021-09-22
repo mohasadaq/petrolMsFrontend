@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import vendorService from "../../../service/vendorService";
-import Vendor from "./Vendor";
 import $ from "jquery";
 import AppFunction from "../../app";
 import { ToastContainer, toast } from "react-toastify";
@@ -8,15 +7,13 @@ import "react-toastify/dist/ReactToastify.css";
 import Swal from "sweetalert2";
 
 // or less ideally
-import { Button, Modal, Alert } from "react-bootstrap";
-import BranchService from "../../../service/BranchService";
+import VendorHtml from './vendorHtml'
 
 const Modelform = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [vendor, setVendor] = useState([]);
-  const [showNumber, setshowNumber] = useState(0);
 
   const getAllVendor = () => {
     vendorService.getVendorList().then((response) => {
@@ -32,6 +29,7 @@ const Modelform = () => {
     e.preventDefault();
     let data = {
       vId: $("#vId").val(),
+      employeeid: localStorage.getItem("empId"),
       vName: $("#vName").val(),
       vPhone: $("#vPhone").val(),
       vAddress: $("#vAddress").val(),
@@ -45,6 +43,7 @@ const Modelform = () => {
       "vPhone",
       "vBeginingBalance",
     ]);
+    console.log(data.response)
     if (inputs !== null) {
       vendorService.saveVendor(data).then((response) => {
         if ($("#vId").val() > 0) {
@@ -98,136 +97,16 @@ const Modelform = () => {
 
   return (
     <>
-      <div className="row">
-        <div className="col-12">
-          <div className="card-box">
-            <div className="row">
-              <div className="col-lg-8"></div>
-              <div className="col-lg-4">
-                <div className="text-lg-right mt-3 mt-lg-0">
-                  <Button
-                    variant="primary"
-                    className="waves-effect waves-light float-right mt-0"
-                    onClick={() => {
-                      handleShow();
-                    }}
-                  >
-                    <i className="mdi mdi-plus-circle mr-1"></i>
-                    Add vendor
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Vendor
-        vendor={vendor}
-        deleteVendor={deleteVendor}
-        editVendor={editVendor}
+      <VendorHtml
+      handleShow={handleShow}
+      handleClose={handleClose}
+      handleSubmitt={handleSubmitt}
+      ToastContainer={ToastContainer}
+      vendor={vendor}
+      deleteVendor={deleteVendor}
+      editVendor={editVendor}
+      show={show}
       />
-      <ToastContainer />
-
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>vendor</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* <form> */}
-          <input
-            type="hidden"
-            name="vId"
-            className="form-control"
-            id="vId"
-            aria-describedby="vName"
-            placeholder="Enter Name"
-          />
-          <div className="row">
-            <div className="col-lg-12 col-sm-12">
-              <div className="form-group">
-                <label>Name</label>
-                <input
-                  type="text"
-                  name="vName"
-                  className="form-control"
-                  id="vName"
-                  aria-describedby="vName"
-                  placeholder="Enter Name"
-                />
-              </div>
-            </div>
-            </div>
-          <div className="row">
-            <div className="col-lg-12 col-sm-12">
-              <div className="form-group">
-                <label>Address</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="vAddress"
-                  name="vAddress"
-                  placeholder="Enter Address"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-lg-12 col-sm-12">
-              <div className="form-group">
-                <label>Email</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="vEmail"
-                  name="vEmail"
-                  placeholder="Enter Tel"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <div className="col-lg-12 col-sm-12">
-              <div className="form-group">
-                <label>Tel</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="vPhone"
-                  name="vPhone"
-                  placeholder="Enter Tel"
-                />
-              </div>
-            </div>
-            </div>
-            
-            <div className="row">
-            <div className="col-lg-12 col-sm-12">
-              <div className="form-group">
-                <label>Begining Balance</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="vBeginingBalance"
-                  name="vBeginingBalance"
-                  placeholder="Enter Begining Balance"
-                />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSubmitt}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      <div className="contaainer"></div>
     </>
   );
 };

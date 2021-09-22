@@ -2,7 +2,9 @@ import React from 'react'
 import MaterialTable from 'material-table'
 
 
-const Customer = ({ customer, deleteCustomer, editCustomer }) =>{
+const Customer = ({ customer, deleteCustomer, editCustomer }) => {
+  
+  let index=0
     return (
       <div>
         <div className="row">
@@ -15,7 +17,10 @@ const Customer = ({ customer, deleteCustomer, editCustomer }) =>{
                   columns={[
                     {
                       title: "Id",
-                      field: "cId",
+                      export: true,
+                      render: () => {
+                        return ++index
+                      },
                     },
                     {
                       title: "Name",
@@ -33,11 +38,16 @@ const Customer = ({ customer, deleteCustomer, editCustomer }) =>{
                       title: "balance",
                       field: "balance"
                     },
+                    {
+                      title: "Branch",
+                      field: "employeeModel.branch.branchName",
+                    },
                   ]}
                   actions={[
                     {
                       icon: "edit",
                       tooltip: "edit",
+                      iconProps: {style: { color: "#01579b" }},
                       onClick: (event, rowData) => {
                         editCustomer(rowData.cId);
                       },
@@ -45,6 +55,7 @@ const Customer = ({ customer, deleteCustomer, editCustomer }) =>{
                     (rowData) => ({
                       icon: "delete",
                       tooltip: "Delete Employee",
+                      iconProps: {style: { color: "#CA0B00" }},
                       onClick: (event, rowData) => {
                         deleteCustomer(rowData.cId);
                       },

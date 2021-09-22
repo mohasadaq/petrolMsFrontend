@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 const Navbar = () => {
     return (
       <>
-        <div className="navbar-custom">
+        <div className="navbar-custom " style={{backgroundColor:'01579b'}}>
           <div className="container-fluid">
             <ul className="list-unstyled topnav-menu float-right mb-0">
               <li className="d-none d-lg-block">
@@ -117,9 +117,10 @@ const Navbar = () => {
                   role="button"
                   aria-haspopup="false"
                   aria-expanded="false"
+                  style={{ color: "white", fontWeight: "bold", letterSpacing: 1 }}
                 >
                   <img
-                    src="../assets/images/users/user-1.jpg"
+                    src="../assets/images/kamil.jpeg"
                     alt="user-image"
                     className="rounded-circle"
                   />
@@ -204,7 +205,7 @@ const Navbar = () => {
                     alt=""
                     height="20"
                   /> */}
-                  <h3 className="text-white mt-3">P M S </h3>
+                  <h3 className="text-white mt-3 ">P M S </h3>
                 </span>
               </a>
             </div>

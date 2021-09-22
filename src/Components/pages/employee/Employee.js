@@ -2,6 +2,8 @@ import React from "react";
 import MaterialTable from 'material-table'
 
 const Employee = ({ employee, deleteEmployee, editEmployee }) => {
+
+  let index=0
   return (
     <div>
       <div className="row">
@@ -14,7 +16,10 @@ const Employee = ({ employee, deleteEmployee, editEmployee }) => {
                 columns={[
                   {
                     title: "Id",
-                    field: "emId",
+                    export: true,
+                    render: () => {
+                      return ++index
+                    },
                   },
                   {
                     title: "Name",
@@ -36,12 +41,17 @@ const Employee = ({ employee, deleteEmployee, editEmployee }) => {
                     title: "user type",
                     field: "usertype",
                   },
+                  {
+                    title: "branch name",
+                    field: "branch.branchName",
+                  },
                   //
                 ]}
                 actions={[
                   {
                     icon: "edit",
                     tooltip: "edit",
+                    iconProps: {style: { color: "#01579b" }},
                     onClick: (event, rowData) => {
                       editEmployee(rowData.emId);
                     },
@@ -49,6 +59,7 @@ const Employee = ({ employee, deleteEmployee, editEmployee }) => {
                   (rowData) => ({
                     icon: "delete",
                     tooltip: "Delete Employee",
+                    iconProps: {style: { color: "#CA0B00" }},
                     onClick: (event, rowData) => {
                       deleteEmployee(rowData.emId);
                     },

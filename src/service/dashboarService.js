@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "https://petrolmanagement.herokuapp.com/transection";
+const url = "http://localhost:8800/transection";
 class dashboardService {
   getTotalMoney() {
     return axios.get(`${url}/total`);
@@ -17,7 +17,7 @@ class dashboardService {
 
  //Total expense 
  getTotalExpense() {
-  return axios.get(`https://petrolmanagement.herokuapp.com/expense/totalExpense`);
+  return axios.get(`http://localhost:8800/expense/totalExpense`);
 }
   
 }

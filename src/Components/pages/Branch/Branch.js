@@ -2,19 +2,24 @@ import React from 'react'
 import MaterialTable from 'material-table'
 // import Edit from '@material-ui/icons/Edit'
 const Branch = ({ branch, editBranch, deleteBranch }) => {
+  let index=0;
   return (
     <div>
       <div className="row">
         <div className="col-12">
           <div className="card">
             <div className="card-body">
+              
               <MaterialTable
                 title="Branch"
                 data={branch}
                 columns={[
                   {
                     title: "Id",
-                    field: "bId",
+                    export: true,
+                    render: (branch) => {
+                      return ++index
+                    },
                   },
                   {
                     title: "Name",
@@ -30,6 +35,7 @@ const Branch = ({ branch, editBranch, deleteBranch }) => {
                   {
                     icon: "edit",
                     tooltip: "edit",
+                    iconProps: {style: { color: "#01579b" }},
                     onClick: (event, rowData) => {
                       editBranch(rowData.bId);
                     },
@@ -37,6 +43,7 @@ const Branch = ({ branch, editBranch, deleteBranch }) => {
                   (rowData) => ({
                     icon: "delete",
                     tooltip: "Delete User",
+                    iconProps: {style: { color: "#CA0B00" }},
                     onClick: (event, rowData) => {
                       deleteBranch(rowData.bId);
                     },

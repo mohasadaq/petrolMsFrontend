@@ -1,10 +1,15 @@
 import axios from 'axios'
-const url ="https://petrolmanagement.herokuapp.com/meterReading"
+const url ="http://localhost:8800/meterReading"
 
 class MeterReadingService {
     getMeterReadingList(){
         return axios.get(`${url}/list`);
     }
+
+    getMeterReadingListBydate(dates){
+        return axios.post(`${url}/listbydate`,dates);
+    }
+
     saveMeterReading(data){
         return axios.post(`${url}/save`,data)
 

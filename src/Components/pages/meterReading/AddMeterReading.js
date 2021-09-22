@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MeterReadingService from "../../../service/meterReadingService";
+import DashboardSerice from "../../../service/dashboarService";
 import MeterReading from "./meterReading";
 import $ from "jquery"
 import AppFunction from "../../app";
@@ -13,31 +14,39 @@ import PetroltypeService from "../../../service/PetrolTypeService"
 import { Button, Modal } from "react-bootstrap";
 
 
-const AddExpense = () => {
+const AddMeterReading = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [meterReading, setMeterReading] = useState([]);
+  const [letersRemaining, setLetersRemaining] = useState([]);
   const [lastReading, setLastReading] = useState(0);
 
   const getMeterReading = () => {
     MeterReadingService.getMeterReadingList().then((response) => {
       setMeterReading(response.data);
     });
+
   };
-
-
+  
 
   const getLastReading = () => {
     MeterReadingService.getMeterLastReading().then((response) => {
       setLastReading(response.data);
-      $("#startReading").val(response.data);
-      $("#startReading").prop('disabled',true);
+      let lastReading = response.data.filter(reading => reading.branch_id
+        == localStorage.getItem("branchId"))
+      
+        if(lastReading.length){
+          $("#startReading").val(lastReading[0].end_reading);
+          $("#startReading").prop('disabled',true);
+        }
 
     });
   };
+
   useEffect(() => {
     getMeterReading()
+    getnumberOfliterRemaining()
   }, []);
 
 
@@ -59,25 +68,31 @@ const AddExpense = () => {
       'pricePerltrId'
     ]);
     if (inputs !== null) {
-      MeterReadingService.saveMeterReading(data).then((response) => {
-        if ($("#mtrrdId").val() > 0) {
-          toast.info("meter reading Successfully  Updated ..");
-          $("#mtrrdId").val(0);
-        }
-        else {
-          toast.success("meter reading Successfully  Saved ..");
-        }
-        getMeterReading();
-        handleClose();
-      });
+      if ($('#endReading').val() == 0) {
+        toast.error('No Liters remaning')
+      } else {
+        MeterReadingService.saveMeterReading(data).then((response) => {
+          if ($("#mtrrdId").val() > 0) {
+            toast.info("meter reading Successfully  Updated ..");
+            $("#mtrrdId").val(0);
+          }
+          else {
+            toast.success("meter reading Successfully  Saved ..");
+          }
+          getMeterReading();
+          handleClose();
+        });
+      }
+     
     }
   };
 
- 
+
 
   // get petrol type 
   const petrolType = () => {
-    PetroltypeService.getpetroltype().then(response=>{
+    PetroltypeService.getpetroltype().then(response => {
+      console.log(response.data);
       response.data.map((petroltype)=>{
         $("#petroltypeId").append(`
         <option value="${petroltype.ptId}">${petroltype.p_type}</option>
@@ -86,7 +101,22 @@ const AddExpense = () => {
     });
   }
 
+  const searchdate = () => {
+    let datefrom = $('#datefrom').val();
+    let dateto = $('#dateto').val();
+    let dates = [];
 
+    let data = {
+      datefrom,dateto
+    }
+    dates.push(data)
+    MeterReadingService.getMeterReadingListBydate(dates).then((resposne => {
+      setMeterReading(resposne.data)
+      console.log(meterReading)
+    }))
+
+    
+}
 
 
   //. edite 
@@ -102,11 +132,42 @@ const AddExpense = () => {
       $("#endReading").val(response.data.endReading);
       $("#pricePerltrId").val(response.data.pricePerltrId);
       $("#startReading").prop('disabled',true);
-      $("#endReading").prop('disabled',true);
+      //$("#endReading").prop('disabled',true);
 
     });
   };
 
+  //numberOfliterRemaining
+  const getnumberOfliterRemaining = () => {
+    DashboardSerice.getNumOfLiterRemaining().then((response) => {
+      setLetersRemaining(response.data)
+    })
+  }
+
+  $(document).ready(() => {
+    $('#petroltypeId').on('change', function () {
+      let petrolRemain = letersRemaining.filter((petrol) => petrol.pt_id == $('#petroltypeId').val())
+      if (Number(petrolRemain[0].CURRENTliters) == 0) {
+       $('#endReading').val(0)
+     }else{
+      $('#endReading').val('')
+       
+     }
+
+    })
+
+    $('#endReading').on('keyup', function () {
+      let petrolRemain = letersRemaining.filter((petrol) => petrol.pt_id == $('#petroltypeId').val())
+
+    
+      if (Number(petrolRemain[0].CURRENTliters) == 0) {
+       $('#endReading').val(0)
+     }else{
+      // $('#endReading').val('')
+       
+     }
+    })
+  })
 
 
   // delete
@@ -124,7 +185,7 @@ const AddExpense = () => {
         MeterReadingService.deleteMeterReading(id).then((response) => {
           Swal.fire(
             'Deleted!',
-            'Customer has been deleted.',
+            'Meter Reading has been deleted.',
             'success'
           )
           getMeterReading()
@@ -136,6 +197,22 @@ const AddExpense = () => {
   };
 
 
+  const usertypedata = () => {
+
+    // alert(localStorage.getItem("usertype"))
+
+    if (localStorage.getItem("usertype") != 'Admin') {
+      console.log(meterReading)
+      return meterReading.filter((emp => emp.empId == localStorage.getItem("empId")));
+      
+    }
+
+    else {
+      return meterReading
+    }
+  }
+
+  // console.log(usertypedata())
 
   return (
     <>
@@ -159,14 +236,48 @@ const AddExpense = () => {
                     Add Meter Reading
                   </Button>
                 </div>
+
               </div>
+            </div>
+            <div className='row'>
+                <div className='col-sm-12 col-lg-4'>
+                <div className="form-group">
+                        <label>Date from</label>
+                        <input
+                          type="date"
+                          name="startReading"
+                          className="form-control"
+                          id="datefrom"
+                          aria-describedby="sname"
+                          placeholder="Enter Name"
+                        />
+                      </div>
+              </div>
+                <div className='col-sm-12 col-lg-4'>
+                   <div className="form-group">
+                        <label>Date To</label>
+                        <input
+                          type="date"
+                          name="startReading"
+                          className="form-control"
+                          id="dateto"
+                          aria-describedby="sname"
+                          placeholder="Enter Name"
+                        />
+                      </div>
+                </div>
+      
+              <div className='col-sm-12 col-lg-4'>
+                <button className='btn btn-success mt-3' onClick={searchdate}>search</button>
+              </div>
+           
             </div>
           </div>
         </div>
       </div>
 
       <MeterReading
-        meterReading={meterReading}
+        meterReading={usertypedata()}
         editMeterReading={editMeterReading}
         deleteMeterReading={deleteMeterReading}
       />
@@ -174,7 +285,7 @@ const AddExpense = () => {
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Meter Reading</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {/* <form> */}
@@ -221,7 +332,7 @@ const AddExpense = () => {
                   className="form-control"
                   id="startReading"
                   aria-describedby="sname"
-                  placeholder="Enter Name"
+                  placeholder="Enter Start Reading"
                 />
               </div>
             </div>
@@ -238,7 +349,7 @@ const AddExpense = () => {
                   className="form-control"
                   id="endReading"
                   aria-describedby="sname"
-                  placeholder="Enter Name"
+                  placeholder="Enter End Reading"
                 />
               </div>
             </div>
@@ -254,7 +365,7 @@ const AddExpense = () => {
                   className="form-control"
                   id="pricePerltrId"
                   aria-describedby="sname"
-                  placeholder="Enter Name"
+                  placeholder="Enter Price Per liter"
                 />
               </div>
             </div>
@@ -275,4 +386,4 @@ const AddExpense = () => {
     </>
   )
 }
-export default AddExpense;
+export default AddMeterReading;

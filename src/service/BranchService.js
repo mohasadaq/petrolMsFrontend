@@ -1,5 +1,5 @@
 import axios from 'axios'
-const url = "https://petrolmanagement.herokuapp.com/branch";
+const url = "http://localhost:8800/branch";
 
 class BranchService {
     getBranchAll(){

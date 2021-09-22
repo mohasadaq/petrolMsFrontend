@@ -1,5 +1,5 @@
 import axios from 'axios'
-const url = "https://petrolmanagement.herokuapp.com/Employee";
+const url = "http://localhost:8800/Employee";
 class EmployeeService {
     
     getEmployeeList(){
@@ -22,21 +22,21 @@ class EmployeeService {
 
     // get menues
     getMenues(id){
-        return axios.get(`https://petrolmanagement.herokuapp.com/menue/list/${id}`)
+        return axios.get(`http://localhost:8800/menue/list/${id}`)
     }
 
     getAllMenues(){
-        return axios.get(`https://petrolmanagement.herokuapp.com/menue/All`)
+        return axios.get(`http://localhost:8800/menue/All`)
     }
 
      // get sub menues
      getSubMenues(){
-        return axios.get(`https://petrolmanagement.herokuapp.com/subMenue/list`)
+        return axios.get(`http://localhost:8800/subMenue/list`)
     }
 
  // get sub menues
  getAllSubMenues(){
-    return axios.get(`https://petrolmanagement.herokuapp.com/subMenue/All`)
+    return axios.get(`http://localhost:8800/subMenue/All`)
 }
 //change password
 changepassword(data){
