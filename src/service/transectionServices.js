@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "http://localhost:8800/transection";
+const url = "https://petrolmanagement.herokuapp.com/transection";
 class PetrolTypeService {
    
     getTransectionList (){
@@ -19,7 +19,7 @@ class PetrolTypeService {
     }
 
     numberOfliterRemaining(id){
-        return axios.get(`http://localhost:8800/transection/ramaining/${id}`);
+        return axios.get(`https://petrolmanagement.herokuapp.com/transection/ramaining/${id}`);
     }
     //deletePetrolType
     deleteTransection(id){
