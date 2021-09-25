@@ -1,5 +1,5 @@
 import axios from 'axios'
-const url = "http://localhost:8800/Employee";
+const url = "https://petrolmanagement.herokuapp.com/Employee";
 class EmployeeService {
     
     getEmployeeList(){
