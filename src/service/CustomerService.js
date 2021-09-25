@@ -1,5 +1,5 @@
 import axios from 'axios'
-const url = "http://localhost:8800/customer";
+const url = "https://petrolmanagement.herokuapp.com/customer";
  class customerService {
      getCustomerList(){
          return axios.get(`${url}/list`)
