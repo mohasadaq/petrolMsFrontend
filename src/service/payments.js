@@ -1,5 +1,5 @@
 import axios from 'axios'
-const url = "http://localhost:8800/payment";
+const url = "https://petrolmanagement.herokuapp.com/payment";
 
 class PaymentService {
     getPayment(){
