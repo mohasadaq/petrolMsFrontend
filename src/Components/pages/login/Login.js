@@ -12,7 +12,7 @@ const login_author = ()=>{
   let input =  Appfunction.validate_form_inputs(['empUsername','empPassword'])
   if(input!==null){
       axios
-        .post("https://petrolmanagement.herokuapp.com/checklogin", {
+        .post("https://petrolmanagement.herokuapp.com/Employee/checklogin", {
           empUsername: $("#empUsername").val(),
           empPassword: $("#empPassword").val(),
         })
