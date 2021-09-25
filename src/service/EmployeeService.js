@@ -22,21 +22,21 @@ class EmployeeService {
 
     // get menues
     getMenues(id){
-        return axios.get(`http://localhost:8800/menue/list/${id}`)
+        return axios.get(`https://petrolmanagement.herokuapp.commenue/list/${id}`)
     }
 
     getAllMenues(){
-        return axios.get(`http://localhost:8800/menue/All`)
+        return axios.get(`https://petrolmanagement.herokuapp.com/menue/All`)
     }
 
      // get sub menues
      getSubMenues(){
-        return axios.get(`http://localhost:8800/subMenue/list`)
+        return axios.get(`https://petrolmanagement.herokuapp.com/subMenue/list`)
     }
 
  // get sub menues
  getAllSubMenues(){
-    return axios.get(`http://localhost:8800/subMenue/All`)
+    return axios.get(`https://petrolmanagement.herokuapp.com/subMenue/All`)
 }
 //change password
 changepassword(data){
