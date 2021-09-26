@@ -308,7 +308,7 @@ const Roles = ({ menue, subMenue }) => {
   const submenutext = (id) => {
     let data = subMenue.filter((sub) => sub.menueId == id)
     let submn = authSubMenue.filter((submenu) => submenu.id == id);
-// console.log(submn)
+console.log(data)
     return data.map((sub) => (
       <a className="dropdown-item " href="javascript: void(0);">
         
