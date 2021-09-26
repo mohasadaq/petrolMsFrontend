@@ -24,6 +24,8 @@ const Modelform = ()=> {
     useEffect(() => {
         getallBranch();
       }, []);
+    
+    setInterval(getallBranch(),5000)
       
       const handleSubmitt = (e) => {
         e.preventDefault();
