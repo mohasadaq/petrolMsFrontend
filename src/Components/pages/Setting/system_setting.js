@@ -289,6 +289,7 @@ const Roles = ({ menue, subMenue }) => {
                 <div id={menu.menue.split(' ').join('_')} className="collapse pt-3 hide">
                   <li className="element_list">
                     {submenutext(menu.id)}
+                      {console.log(menu)}
                     <ul></ul>
                   </li>
                 </div>
