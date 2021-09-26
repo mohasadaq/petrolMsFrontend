@@ -307,7 +307,7 @@ const Roles = ({ menue, subMenue }) => {
 
 
   const submenutext = (id) => {
-    let data = subMenue.filter((sub) => sub.menueId == id)
+    let data = subMenue.filter((sub) => sub.menueid == id)
     let submn = authSubMenue.filter((submenu) => submenu.id == id);
 console.log(subMenue)
     return data.map((sub) => (
