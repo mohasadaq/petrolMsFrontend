@@ -289,7 +289,6 @@ const Roles = ({ menue, subMenue }) => {
                 <div id={menu.menue.split(' ').join('_')} className="collapse pt-3 hide">
                   <li className="element_list">
                     {submenutext(menu.id)}
-                      {console.log(menu)}
                     <ul></ul>
                   </li>
                 </div>
@@ -309,7 +308,6 @@ const Roles = ({ menue, subMenue }) => {
   const submenutext = (id) => {
     let data = subMenue.filter((sub) => sub.menueid == id)
     let submn = authSubMenue.filter((submenu) => submenu.id == id);
-console.log(subMenue[0].menueid,id)
     return data.map((sub) => (
       <a className="dropdown-item " href="javascript: void(0);">
         
