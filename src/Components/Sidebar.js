@@ -12,9 +12,8 @@ const Sidebar = () => {
   }, []);
 
   const menuefunc = () => {
-      alert(localStorage.getItem('empId'))
     EmployeeService.getMenues(localStorage.getItem('empId')).then(response => {
-      console.log(response.data)
+//       console.log(response.data)
       setMenue(response.data)
     })
   }
@@ -23,6 +22,8 @@ const Sidebar = () => {
   const submenu = () => {
     EmployeeService.getSubMenues().then(response => {
       let submenues = response.data.filter((menue)=> menue.emp_id==localStorage.getItem('empId'))
+      alert(localStorage.getItem('empId'))
+      console.log(submenues)
       if(submenues.length<1) {    
         toast.error('Contact System Admin')
         window.location.href='/'
