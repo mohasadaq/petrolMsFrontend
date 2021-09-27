@@ -22,7 +22,6 @@ const Sidebar = () => {
   const submenu = () => {
     EmployeeService.getSubMenues().then(response => {
       let submenues = response.data.filter((menue)=> menue.emp_id==localStorage.getItem('empId'))
-      alert(localStorage.getItem('empId'))
       console.log(submenues)
       if(submenues.length<1) {    
         toast.error('Contact System Admin')
@@ -33,7 +32,7 @@ const Sidebar = () => {
   }
 
   const submenutext = (id) => {
-    let data = subMenue.filter((sub) => sub.menueId==id)
+    let data = subMenue.filter((sub) => sub.menueid==id)
      return data.map((sub) => (
               <Link className="dropdown-item " to={sub.link}style={{color:"black",fontWeight:"bold",fontFamily:"arial",letterSpacing:1}}>
                 <i className={sub.icon}></i>
