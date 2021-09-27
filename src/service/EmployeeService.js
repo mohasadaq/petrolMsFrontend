@@ -22,7 +22,7 @@ class EmployeeService {
 
     // get menues
     getMenues(id){
-        return axios.get(`https://petrolmanagement.herokuapp.commenue/list/${id}`)
+        return axios.get(`https://petrolmanagement.herokuapp.com/menue/list/${id}`)
     }
 
     getAllMenues(){
