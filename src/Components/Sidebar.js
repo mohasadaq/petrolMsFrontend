@@ -12,7 +12,7 @@ const Sidebar = () => {
   }, []);
 
   const menuefunc = () => {
-      alert(1)
+      alert(localStorage.getItem('empId'))
     EmployeeService.getMenues(localStorage.getItem('empId')).then(response => {
       console.log(response.data)
       setMenue(response.data)
